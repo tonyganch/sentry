@@ -16,10 +16,15 @@ type Props = SizeProp & {
    */
   value: string | keyof Theme;
   noText?: boolean;
+  noMargin?: boolean;
   /**
    * to replace the parsed color name with a custom name
    */
   textOverwrite?: string;
+};
+
+type OuterWrapProps = SizeProp & {
+  noMargin: boolean;
 };
 
 type WrapperProps = SizeProp & {
@@ -31,9 +36,14 @@ type ColorSwatchProps = SizeProp & {
   border: boolean;
 };
 
-function ColorChip({value, size = 'md', noText = false, textOverwrite}: Props) {
+const ColorChip = ({
+  value,
+  size = 'md',
+  noText = false,
+  noMargin = false,
+  textOverwrite,
+}: Props) => {
   const theme = useTheme();
-
   const isThemeColor = value in theme;
 
   const color = Color(isThemeColor ? theme[value] : value);
@@ -42,28 +52,28 @@ function ColorChip({value, size = 'md', noText = false, textOverwrite}: Props) {
     : color?.hex?.();
 
   return (
-    <OuterWrap size={size}>
+    <OuterWrap size={size} noMargin={noMargin}>
       <Wrapper size={size} noText={noText}>
         <ColorSwatch
           size={size}
-          background={color?.hex?.()}
+          background={color?.string?.()}
           border={color?.luminosity?.() > 0.8}
         />
         {!noText && <Text size={size}>{textOverwrite ?? colorString}</Text>}
       </Wrapper>
     </OuterWrap>
   );
-}
+};
 
 export default ColorChip;
 
-const OuterWrap = styled('span')<SizeProp>`
+const OuterWrap = styled('span')<OuterWrapProps>`
   align-items: center;
   ${p =>
     p.size === 'lg'
       ? `
     display: flex;
-    margin: ${space(2)} auto;
+    ${!p.noMargin && `margin: ${space(2)} auto;`}
     `
       : `
     display: inline-flex;

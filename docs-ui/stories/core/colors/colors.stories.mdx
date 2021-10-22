@@ -1,0 +1,105 @@
+import {NeutralTable, AccentTable} from './tables';
+
+<Meta title="Core/Colors" />
+
+# Colors
+
+Sentry has a flexible, tiered color system that adapts to both light and dark mode.
+
+---
+
+## Grays
+
+There are 5 shades of gray suitable for a wide range of uses in the user interface.
+
+- Gray 300 and above are accessible text colors that conform to [WCAG standards](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html).
+
+- Gray 200 and Gray 100 work well as border and line colors.
+
+<NeutralTable />
+
+---
+
+## Accent colors
+
+Accent colors help shift the user's focus to certain interactive and high-priority elements, like links, buttons, and warning banners.
+
+### Hue
+
+There are 6 hues to choose from: Purple, Blue, Green, Yellow, Red, and Pink. Most hues (except for Pink) communicate particular messages based on their connotations. For example, Green conveys success while Red means an error has occurred. Refer to the table below for each hue's meaning.
+
+### Opacity
+
+Additionally, each hue comes in 3 levels of opacity: 300 (full), 200 (medium), and 100 (low).
+
+- The 300 series has full opacity and serves well as text and icon colors (with the exception of Yellow 300, which does not meet [WCAG's contrast standards](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html))
+
+- The 200 series have medium opacity, good as border and line colors
+
+- The 100 series have very low opacity and are meant to be background fill colors
+
+<AccentTable />
+
+---
+
+## Accessibility
+
+When it comes to using color, there are two main accessibility concerns: readability and differentiation.
+
+### Text readability
+
+[WCAG](https://www.w3.org/TR/WCAG21/) requires that normal text elements have a contrast ratio of at least 4.5:1 against the background. For large text (at least 16px in size AND in medium/bold weight), the required ratio is lower, at 3:1. This is to ensure a comfortable reading experience in different lighting conditions. [Use this tool](https://webaim.org/resources/contrastchecker/) to confirm text contrast ratios.
+
+In Sentry's color palette, only Gray 300 and above satisfy the contrast requirement for normal text. This applies to both light and dark mode.
+
+Accent colors in the 300 series, except for Yellow 300, satisfy the contrast requirement for large text.
+
+<DoDont
+  doBox={{
+    img: {src: require('./contrast-do.svg'), alt: 'Text in Gray 300, 400, and 500'},
+    text: 'Use Gray 300 and above for normal text',
+  }}
+  dontBox={{
+    img: {src: require('./contrast-dont.svg'), alt: 'Text in Gray 100 and 200'},
+    text: "Use Gray 100 or 200 for normal text, as they don't have the required the contrast levels",
+  }}
+/>
+
+<DoDont
+  doBox={{
+    img: {
+      src: require('./accent-contrast-do.svg'),
+      alt: 'Text in Green 300',
+    },
+    text: 'Use accent colors in the 300 series (except for Yellow 300) for large text, if needed',
+  }}
+  dontBox={{
+    img: {src: require('./accent-contrast-dont.svg'), alt: 'Text in Green 100 and 200'},
+    text: 'Use accent colors in the 100 or 200 series for any text',
+  }}
+/>
+
+### Differentiation
+
+Color can be an effective way to visually separate elements in the user interface. However, not all users see color in the same way. Some are color-blind and cannot reliably differentiate colors from one another. Others may use filters, like yellow-shifting for nighttime, or be in bright environments with high amounts of glare, reducing their ability to see color clearly.
+
+Given this unreliability, color shouldn't be the only way to differentiate elements. This is especially true in charts where the differentiation between lines and shapes are crucial.
+
+Whenever possible, provide additional visual cues like icons, text labels, line type (solid, dashed, dotted),… to further reinforce the separation.
+
+<DoDont
+  doBox={{
+    img: {
+      src: require('./differentiation-do.svg'),
+      alt: 'Solid, dashed, and dotted lines in different colors',
+    },
+    text: 'Provide additional visual encoding (e.g. line type) besides color to differentiate elements',
+  }}
+  dontBox={{
+    img: {
+      src: require('./differentiation-dont.svg'),
+      alt: 'Solid lines in different colors',
+    },
+    text: 'Use color as the only way to differentiate elements',
+  }}
+/>

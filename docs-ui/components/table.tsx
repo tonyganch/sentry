@@ -3,8 +3,9 @@ import styled from '@emotion/styled';
 import space from 'app/styles/space';
 
 type TableCellProps = {
-  align: 'left' | 'right' | 'center';
-  tabularFigures: boolean;
+  align?: 'left' | 'right' | 'center';
+  verticalAlign?: 'top' | 'center' | 'bottom';
+  tabularFigures?: boolean;
   morePadding?: boolean;
 };
 
@@ -13,7 +14,8 @@ const TableOuter = styled('div')`
   margin: ${space(2)} 0;
   overflow: hidden;
   border: solid 1px ${p => p.theme.border};
-  border-radius: 4px;
+  border-radius: ${p => p.theme.borderRadius};
+  background-color: ${p => p.theme.background};
 `;
 
 const TableInner = styled('table')`
@@ -21,11 +23,13 @@ const TableInner = styled('table')`
   margin: 0;
 `;
 
-export const Table = ({children}) => (
-  <TableOuter>
-    <TableInner>{children}</TableInner>
-  </TableOuter>
-);
+export const Table = ({children}) => {
+  return (
+    <TableOuter>
+      <TableInner>{children}</TableInner>
+    </TableOuter>
+  );
+};
 
 export const TableHead = styled('thead')`
   background: ${p => p.theme.bodyBackground};
@@ -63,16 +67,15 @@ export const TableRow = styled('tr')`
 
 export const TableCell = styled('td')<TableCellProps>`
   padding: ${p => (p.morePadding ? space(2) : space(1))} 0;
-  vertical-align: center;
+  padding-right: ${space(2)};
 
   ${p => p.align && `text-align: ${p.align};`}
+  ${p =>
+    p.verticalAlign ? `vertical-align: ${p.verticalAlign};` : `vertical-align: center;`}
   ${p => p.tabularFigures && `font-variant-numeric: tabular-nums;`}
 
   &:first-of-type {
     padding-left: ${space(2)};
-  }
-  &:last-of-type {
-    padding-right: ${space(2)};
   }
 
   & * {
