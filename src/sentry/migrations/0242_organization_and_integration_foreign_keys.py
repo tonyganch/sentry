@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
     atomic = True
 
     dependencies = [
-        ("sentry", "0235_add_metricskeyindexer_table"),
+        ("sentry", "0241_grouphistory_null_actor"),
     ]
 
     operations = [
