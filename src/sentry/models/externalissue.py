@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Any, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from django.db import models
 from django.db.models import QuerySet
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 
 class ExternalIssueManager(BaseManager):
     def get_for_integration(
-        self, integration: "Integration", external_issue_key: Optional[str] = None
+        self, integration: Integration, external_issue_key: str | None = None
     ) -> QuerySet:
         kwargs = dict(
             integration=integration,
