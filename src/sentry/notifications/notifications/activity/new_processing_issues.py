@@ -1,5 +1,10 @@
 from typing import Any, MutableMapping, Optional
 
+from sentry.integrations.slack.message_builder import SlackBody
+from sentry.integrations.slack.message_builder.notifications import (
+    SlackProjectNotificationsMessageBuilder,
+)
+from sentry.integrations.slack.utils import build_notification_footer
 from sentry.models import Activity, Mapping, NotificationSetting, User
 from sentry.notifications.types import GroupSubscriptionReason
 from sentry.notifications.utils import summarize_issues
@@ -9,7 +14,18 @@ from sentry.utils.http import absolute_uri
 from .base import ActivityNotification
 
 
+class SlackNewProcessingIssuesMessageBuilder(SlackProjectNotificationsMessageBuilder):
+    def build(self) -> SlackBody:
+        return self._build(
+            title=self.notification.get_title(),
+            text=self.notification.get_message_description(),
+            footer=build_notification_footer(self.notification, self.recipient),
+        )
+
+
 class NewProcessingIssuesActivityNotification(ActivityNotification):
+    message_builder = SlackNewProcessingIssuesMessageBuilder
+
     def __init__(self, activity: Activity) -> None:
         super().__init__(activity)
         self.issues = summarize_issues(self.activity.data["issues"])

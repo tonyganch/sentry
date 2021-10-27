@@ -3,14 +3,11 @@ from typing import Any, Dict, List, Mapping, Union
 from sentry.integrations.slack.message_builder import SlackBody
 from sentry.integrations.slack.message_builder.base.base import SlackMessageBuilder
 from sentry.integrations.slack.message_builder.issues import (
-    SlackIssuesMessageBuilder,
     build_attachment_title,
     get_title_link,
+    SlackIssuesMessageBuilder
 )
 from sentry.models import Team, User
-from sentry.notifications.notifications.activity.new_processing_issues import (
-    NewProcessingIssuesActivityNotification,
-)
 from sentry.notifications.notifications.activity.release import ReleaseActivityNotification
 from sentry.notifications.notifications.base import BaseNotification, ProjectNotification
 from sentry.notifications.utils import get_release
@@ -65,32 +62,6 @@ class SlackProjectNotificationsMessageBuilder(SlackNotificationsMessageBuilder):
 
     def build(self) -> SlackBody:
         group = getattr(self.notification, "group", None)
-        # TODO: refactor so we don't call SlackIssuesMessageBuilder through SlackProjectNotificationsMessageBuilder
-        if self.notification.is_message_issue_unfurl:
-            return SlackIssuesMessageBuilder(
-                group=group,
-                event=getattr(self.notification, "event", None),
-                tags=self.context.get("tags", None),
-                rules=getattr(self.notification, "rules", None),
-                issue_details=True,
-                notification=self.notification,
-                recipient=self.recipient,
-            ).build()
-
-        if isinstance(self.notification, ReleaseActivityNotification):
-            return self._build(
-                text="",
-                actions=build_deploy_buttons(self.notification),
-                footer=build_notification_footer(self.notification, self.recipient),
-            )
-
-        if isinstance(self.notification, NewProcessingIssuesActivityNotification):
-            return self._build(
-                title=self.notification.get_title(),
-                text=self.notification.get_message_description(),
-                footer=build_notification_footer(self.notification, self.recipient),
-            )
-
         return self._build(
             title=build_attachment_title(group),
             title_link=get_title_link(group, None, False, True, self.notification),
@@ -100,10 +71,15 @@ class SlackProjectNotificationsMessageBuilder(SlackNotificationsMessageBuilder):
         )
 
 
-def build_notification_attachment(
-    notification: BaseNotification,
-    context: Mapping[str, Any],
-    recipient: Union["Team", "User"],
-) -> SlackBody:
-    """@deprecated"""
-    return notification.build_slack_attachment(context, recipient)
+class SlackIssuesMessageBuilder2(SlackProjectNotificationsMessageBuilder):
+    def build(self) -> SlackBody:
+        group = getattr(self.notification, "group", None)
+        return SlackIssuesMessageBuilder(
+            group=group,
+            event=getattr(self.notification, "event", None),
+            tags=self.context.get("tags", None),
+            rules=getattr(self.notification, "rules", None),
+            issue_details=True,
+            notification=self.notification,
+            recipient=self.recipient,
+        ).build()

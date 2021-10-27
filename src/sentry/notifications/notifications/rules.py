@@ -3,6 +3,7 @@ from typing import Any, Iterable, Mapping, MutableMapping, Optional, Union
 
 import pytz
 
+from sentry.integrations.slack.message_builder.notifications import SlackIssuesMessageBuilder2
 from sentry.models import Team, User, UserOption
 from sentry.notifications.notifications.base import ProjectNotification
 from sentry.notifications.types import ActionTargetType
@@ -25,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class AlertRuleNotification(ProjectNotification):
     fine_tuning_key = "alerts"
-    is_message_issue_unfurl = True
+    message_builder = SlackIssuesMessageBuilder2
     metrics_key = "issue_alert"
 
     def __init__(

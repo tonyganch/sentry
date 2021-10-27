@@ -6,6 +6,7 @@ from urllib.parse import urlparse, urlunparse
 from django.utils.html import escape
 from django.utils.safestring import SafeString, mark_safe
 
+from sentry.integrations.slack.message_builder.notifications import SlackIssuesMessageBuilder2
 from sentry.notifications.helpers import get_reason_context
 from sentry.notifications.notifications.base import ProjectNotification
 from sentry.notifications.utils import send_activity_notification
@@ -65,7 +66,7 @@ class ActivityNotification(ProjectNotification, ABC):
 
 
 class GroupActivityNotification(ActivityNotification, ABC):
-    is_message_issue_unfurl = True
+    message_builder = SlackIssuesMessageBuilder2
 
     def __init__(self, activity: "Activity") -> None:
         super().__init__(activity)

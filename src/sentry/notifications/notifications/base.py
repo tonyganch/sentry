@@ -34,20 +34,14 @@ class MessageAction:
         }
 
 
-class BaseNotification:
+class BaseNotification(abc.ABC):
     fine_tuning_key: Optional[str] = None
     metrics_key: str = ""
+    analytics_event = None
+    message_builder = SlackNotificationsMessageBuilder
 
     def __init__(self, organization: "Organization"):
         self.organization = organization
-
-    @property
-    def SlackMessageBuilderClass(self) -> Type["SlackNotificationsMessageBuilder"]:
-        from sentry.integrations.slack.message_builder.notifications import (
-            SlackNotificationsMessageBuilder,
-        )
-
-        return SlackNotificationsMessageBuilder
 
     @property
     def org_slug(self) -> str:

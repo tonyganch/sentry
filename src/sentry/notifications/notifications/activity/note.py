@@ -1,10 +1,11 @@
 from typing import Any, Mapping, Tuple
 
+from sentry.integrations.slack.message_builder.notifications import SlackProjectNotificationsMessageBuilder
 from .base import GroupActivityNotification
 
 
 class NoteActivityNotification(GroupActivityNotification):
-    is_message_issue_unfurl = False
+    message_builder = SlackProjectNotificationsMessageBuilder
 
     def get_activity_name(self) -> str:
         return "Note"
