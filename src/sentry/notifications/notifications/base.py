@@ -85,7 +85,7 @@ class BaseNotification(abc.ABC):
     ) -> None:
         raise NotImplementedError
 
-    def get_log_params(self, recipient: Union["Team", "User"]) -> Dict[str, Any]:
+    def get_log_params(self, recipient: Union["Team", "User"]) -> Mapping[str, Any]:
         return {
             "organization_id": self.organization.id,
             "actor_id": recipient.actor_id,

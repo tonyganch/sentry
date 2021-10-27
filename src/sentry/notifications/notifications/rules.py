@@ -151,3 +151,10 @@ class AlertRuleNotification(ProjectNotification):
 
         for provider, participants in participants_by_provider.items():
             notify(provider, self, participants, shared_context)
+
+    def get_log_params(self, recipient: Union["Team", "User"]) -> Mapping[str, Any]:
+        return {
+            "target_type": self.target_type,
+            "target_identifier": self.target_identifier,
+            **super().get_log_params(recipient)
+        }

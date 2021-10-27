@@ -64,6 +64,9 @@ class ActivityNotification(ProjectNotification, ABC):
     def send(self) -> None:
         return send_activity_notification(self)
 
+    def get_log_params(self, recipient: Union["Team", "User"]) -> Mapping[str, Any]:
+        return {"activity": self.activity, **super().get_log_params(recipient)}
+
 
 class GroupActivityNotification(ActivityNotification, ABC):
     message_builder = SlackIssuesMessageBuilder2
@@ -175,3 +178,6 @@ class GroupActivityNotification(ActivityNotification, ABC):
         context.update(params)
 
         return mark_safe(description.format(**context))
+
+    def get_log_params(self, recipient: Union["Team", "User"], **kwargs: Any) -> Mapping[str, Any]:
+        return {"group": self.group.id, **super().get_log_params(recipient)}
