@@ -34,6 +34,9 @@ class BaseNotification(abc.ABC):
     def get_category(self) -> str:
         raise NotImplementedError
 
+    def get_base_context(self) -> MutableMapping[str, Any]:
+        return {}
+
     def get_subject(self, context: Optional[Mapping[str, Any]] = None) -> str:
         """The subject line when sending this notifications as an email."""
         raise NotImplementedError

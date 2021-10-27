@@ -40,6 +40,7 @@ class ActivityNotification(ProjectNotification, ABC):
             "title": self.get_title(),
             "project": self.project,
             "project_link": self.get_project_link(),
+            **super().get_base_context(),
         }
 
     def get_recipient_context(
