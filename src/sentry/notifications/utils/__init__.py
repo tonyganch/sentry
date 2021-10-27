@@ -181,11 +181,10 @@ def get_link(group: Group, environment: Optional[str]) -> str:
 
 
 def get_integration_link(organization: Organization, integration_slug: str) -> str:
-    return str(
-        absolute_uri(
-            f"/settings/{organization.slug}/integrations/{integration_slug}/?referrer=alert_email"
-        )
+    integration_link: str = absolute_uri(
+        f"/settings/{organization.slug}/integrations/{integration_slug}/?referrer=alert_email"
     )
+    return integration_link
 
 
 def get_rules(

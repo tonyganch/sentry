@@ -3,9 +3,8 @@ from typing import Any, Mapping, Union
 from sentry.integrations.slack.message_builder import SlackBody
 from sentry.integrations.slack.message_builder.base.base import SlackMessageBuilder
 from sentry.integrations.slack.message_builder.issues import (
-    build_attachment_title,
+    SlackIssuesMessageBuilder,
     get_title_link,
-    SlackIssuesMessageBuilder
 )
 from sentry.integrations.slack.utils import build_buttons, build_notification_footer
 from sentry.models import Team, User
@@ -39,12 +38,11 @@ class SlackProjectNotificationsMessageBuilder(SlackNotificationsMessageBuilder):
     def build(self) -> SlackBody:
         group = getattr(self.notification, "group", None)
         return self._build(
-            title=build_attachment_title(group),
+            title=self.notification.build_attachment_title(),
             title_link=get_title_link(group, None, False, True, self.notification),
             text=self.notification.get_message_description(),
             actions=build_buttons(self.notification),
             footer=build_notification_footer(self.notification, self.recipient),
-            color="info",
         )
 
 

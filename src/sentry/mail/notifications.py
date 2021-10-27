@@ -36,11 +36,21 @@ def get_headers(notification: BaseNotification) -> Mapping[str, Any]:
 
 
 def build_subject_prefix(project: "Project") -> str:
-    key = "mail:subject_prefix"
-    out: str = force_text(
-        ProjectOption.objects.get_value(project, key) or options.get("mail.subject-prefix")
+    subject_prefix: str = force_text(
+        ProjectOption.objects.get_value(project, "mail:subject_prefix")
+        or options.get("mail.subject-prefix")
     )
-    return out
+    return subject_prefix
+
+
+def get_subject_with_prefix(
+    notification: BaseNotification,
+    context: Optional[Mapping[str, Any]] = None,
+) -> bytes:
+    prefix = ""
+    if isinstance(notification, ProjectNotification):
+        prefix = build_subject_prefix(notification.project)
+    return f"{prefix}{notification.get_subject(context)}".encode()
 
 
 def get_unsubscribe_link(
@@ -58,6 +68,7 @@ def get_unsubscribe_link(
 def log_message(notification: BaseNotification, recipient: Union["Team", "User"]) -> None:
     extra = notification.get_log_params(recipient)
     logger.info("mail.adapter.notify.mail_user", extra=extra)
+    notification.record_notification_sent(recipient, ExternalProviders.EMAIL)
 
 
 def get_context(
@@ -102,9 +113,10 @@ def send_notification_as_email(
         msg = MessageBuilder(
             **get_builder_args(notification, recipient, shared_context, extra_context_by_user_id)
         )
-        # TODO: find better way of handling this
+        kwargs = {}
         if isinstance(notification, ProjectNotification):
-            msg.add_users([recipient.id], project=notification.project)
+            kwargs["project"] = notification.project
+        msg.add_users([recipient.id], **kwargs)
         msg.send_async()
 
 
@@ -118,7 +130,7 @@ def get_builder_args(
     extra_context = (extra_context_by_user_id or {}).get(recipient.id, {})
     context = get_context(notification, recipient, shared_context or {}, extra_context)
     return {
-        "subject": notification.get_subject_with_prefix(context=context),
+        "subject": get_subject_with_prefix(notification, context),
         "context": context,
         "template": notification.get_template(),
         "html_template": notification.get_html_template(),

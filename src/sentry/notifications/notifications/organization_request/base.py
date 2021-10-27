@@ -1,24 +1,25 @@
 import abc
 import logging
-from typing import TYPE_CHECKING, Any, Iterable, Mapping, MutableMapping, Sequence, Type, Union
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, MutableMapping, Union
 
-from sentry import analytics, features
+from sentry import features
+from sentry.integrations.slack.message_builder.organization_requests import (
+    SlackOrganizationRequestMessageBuilder,
+)
 from sentry.integrations.slack.utils.notifications import get_settings_url
 from sentry.models import OrganizationMember, Team
-from sentry.notifications.notifications.base import BaseNotification, MessageAction
+from sentry.notifications.notifications.base import BaseNotification
 from sentry.notifications.notify import notification_providers
 from sentry.types.integrations import ExternalProviders
 
 if TYPE_CHECKING:
-    from sentry.integrations.slack.message_builder.organization_requests import (
-        SlackOrganizationRequestMessageBuilder,
-    )
     from sentry.models import Organization, User
 
 logger = logging.getLogger(__name__)
 
 
 class OrganizationRequestNotification(BaseNotification, abc.ABC):
+    message_builder = SlackOrganizationRequestMessageBuilder
     analytics_event: str = ""
     referrer: str = ""
     member_by_user_id: MutableMapping[int, OrganizationMember] = {}
@@ -26,14 +27,6 @@ class OrganizationRequestNotification(BaseNotification, abc.ABC):
     def __init__(self, organization: "Organization", requester: "User") -> None:
         super().__init__(organization)
         self.requester = requester
-
-    @property
-    def SlackMessageBuilderClass(self) -> Type["SlackOrganizationRequestMessageBuilder"]:
-        from sentry.integrations.slack.message_builder.organization_requests import (
-            SlackOrganizationRequestMessageBuilder,
-        )
-
-        return SlackOrganizationRequestMessageBuilder
 
     def get_reference(self) -> Any:
         return self.organization
@@ -67,11 +60,7 @@ class OrganizationRequestNotification(BaseNotification, abc.ABC):
 
         # TODO: need to read off notification settings
         recipients = self.determine_recipients()
-        output = {
-            provider: [recipient for recipient in recipients] for provider in available_providers
-        }
-
-        return output
+        return {provider: recipients for provider in available_providers}
 
     def send(self) -> None:
         from sentry.notifications.notify import notify
@@ -98,18 +87,6 @@ class OrganizationRequestNotification(BaseNotification, abc.ABC):
         """
         self.member_by_user_id[member.user_id] = member
 
-    def build_attachment_title(self) -> str:
-        raise NotImplementedError
-
-    def get_message_description(self) -> str:
-        raise NotImplementedError
-
-    def get_actions(self) -> Sequence[Mapping[str, str]]:
-        return [message_action.as_slack() for message_action in self.get_message_actions()]
-
-    def get_message_actions(self) -> Sequence[MessageAction]:
-        raise NotImplementedError
-
     def build_notification_footer(self, recipient: Union["Team", "User"]) -> str:
         # not implemented for teams
         if isinstance(recipient, Team):
@@ -120,14 +97,6 @@ class OrganizationRequestNotification(BaseNotification, abc.ABC):
                     as an organization {recipient_member.role} | <{settings_url}|Notification Settings>"""
 
     def record_notification_sent(
-        self, recipient: Union["Team", "User"], provider: ExternalProviders
+        self, recipient: Union["Team", "User"], provider: ExternalProviders, **kwargs: Any
     ) -> None:
-        # this event is meant to work for multiple providers but architecture
-        # limitations mean we will fire individual for each provider
-        analytics.record(
-            self.analytics_event,
-            organization_id=self.organization.id,
-            user_id=self.requester.id,
-            target_user_id=recipient.id,
-            providers=provider,
-        )
+        super().record_notification_sent(recipient, provider, user_id=self.requester.id, **kwargs)

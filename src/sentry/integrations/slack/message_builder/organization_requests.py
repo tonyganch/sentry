@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Mapping, Union
 
 from sentry.integrations.slack.message_builder import SlackBody
 from sentry.integrations.slack.message_builder.notifications import SlackNotificationsMessageBuilder
+from sentry.integrations.slack.utils import build_buttons
 from sentry.notifications.notifications.organization_request import OrganizationRequestNotification
 
 if TYPE_CHECKING:
@@ -20,11 +21,10 @@ class SlackOrganizationRequestMessageBuilder(SlackNotificationsMessageBuilder):
         self.notification: OrganizationRequestNotification = notification
 
     def build(self) -> SlackBody:
-        # may need to pass more args to _build and pass recipient to certain helper functions
+        # We may need to pass more args to _build and pass recipient to certain helper functions.
         return self._build(
             title=self.notification.build_attachment_title(),
             text=self.notification.get_message_description(),
             footer=self.notification.build_notification_footer(self.recipient),
-            actions=self.notification.get_actions(),
-            color="info",
+            actions=build_buttons(self.notification),
         )

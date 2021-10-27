@@ -156,5 +156,5 @@ class AlertRuleNotification(ProjectNotification):
         return {
             "target_type": self.target_type,
             "target_identifier": self.target_identifier,
-            **super().get_log_params(recipient)
+            **super().get_log_params(recipient),
         }
