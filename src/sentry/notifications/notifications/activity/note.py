@@ -1,6 +1,9 @@
 from typing import Any, Mapping, Tuple
 
-from sentry.integrations.slack.message_builder.notifications import SlackProjectNotificationsMessageBuilder
+from sentry.integrations.slack.message_builder.notifications import (
+    SlackProjectNotificationsMessageBuilder,
+)
+
 from .base import GroupActivityNotification
 
 
