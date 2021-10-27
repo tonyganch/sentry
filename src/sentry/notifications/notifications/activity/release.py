@@ -3,6 +3,7 @@ from typing import Any, Iterable, List, Mapping, MutableMapping, Optional, Seque
 from sentry_relay import parse_release
 
 from sentry.models import Activity, CommitFileChange, Project, Team, User
+from sentry.notifications.notifications import MessageAction
 from sentry.notifications.utils import (
     get_commits_for_release,
     get_deploy,
@@ -19,7 +20,6 @@ from sentry.types.integrations import ExternalProviders
 from sentry.utils.compat import zip
 from sentry.utils.http import absolute_uri
 
-from ..base import MessageAction
 from .base import ActivityNotification
 
 
@@ -128,7 +128,7 @@ class ReleaseActivityNotification(ActivityNotification):
             MessageAction(
                 label=project.slug,
                 url=absolute_uri(
-                    f"/organizations/{project.organization.slug}/releases/{self.release.version}/?project={project.id}&unselectedSeries=Healthy/"
+                    f"/organizations/{project.organization.slug}/releases/{self.version}/?project={project.id}&unselectedSeries=Healthy/"
                 ),
             )
             for project in self.projects

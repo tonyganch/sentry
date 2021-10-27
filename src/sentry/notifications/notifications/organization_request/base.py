@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class OrganizationRequestNotification(BaseNotification, abc.ABC):
-    message_builder = SlackOrganizationRequestMessageBuilder
+    message_builder: Any = SlackOrganizationRequestMessageBuilder
     analytics_event: str = ""
     referrer: str = ""
     member_by_user_id: MutableMapping[int, OrganizationMember] = {}

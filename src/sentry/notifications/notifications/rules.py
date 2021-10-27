@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 class AlertRuleNotification(ProjectNotification):
     fine_tuning_key = "alerts"
-    message_builder = SlackIssuesMessageBuilder2
+    message_builder: Any = SlackIssuesMessageBuilder2
     metrics_key = "issue_alert"
 
     def __init__(

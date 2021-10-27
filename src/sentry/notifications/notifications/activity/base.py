@@ -70,7 +70,7 @@ class ActivityNotification(ProjectNotification, ABC):
 
 
 class GroupActivityNotification(ActivityNotification, ABC):
-    message_builder = SlackIssuesMessageBuilder2
+    message_builder: Any = SlackIssuesMessageBuilder2
 
     def __init__(self, activity: "Activity") -> None:
         super().__init__(activity)

@@ -13,7 +13,7 @@ from .base import ActivityNotification
 
 
 class NewProcessingIssuesActivityNotification(ActivityNotification):
-    message_builder = SlackNewProcessingIssuesMessageBuilder
+    message_builder: Any = SlackNewProcessingIssuesMessageBuilder
 
     def __init__(self, activity: Activity) -> None:
         super().__init__(activity)

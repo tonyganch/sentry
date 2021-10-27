@@ -7,7 +7,7 @@ from sentry.integrations.slack.message_builder.notifications import (
     SlackNotificationsMessageBuilder,
     SlackProjectNotificationsMessageBuilder,
 )
-from sentry.notifications.notifications.message_action import MessageAction
+from sentry.notifications.notifications import MessageAction
 from sentry.types.integrations import ExternalProviders
 from sentry.utils.http import absolute_uri
 
@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 class BaseNotification(abc.ABC):
     fine_tuning_key: Optional[str] = None
     metrics_key: str = ""
-    analytics_event = None
-    message_builder = SlackNotificationsMessageBuilder
+    analytics_event = ""
+    message_builder: Any = SlackNotificationsMessageBuilder
 
     def __init__(self, organization: "Organization"):
         self.organization = organization
@@ -100,7 +100,7 @@ class BaseNotification(abc.ABC):
 
 
 class ProjectNotification(BaseNotification, abc.ABC):
-    message_builder = SlackProjectNotificationsMessageBuilder
+    message_builder: Any = SlackProjectNotificationsMessageBuilder
 
     def __init__(self, project: "Project") -> None:
         self.project = project

@@ -26,20 +26,16 @@ def get_provider_name(provider_type: str, provider_slug: str) -> str | None:
     :raises: ValueError if provider_type is not one of the three from above.
     :raises: RuntimeError if the provider is not found.
     """
-    # Explicitly typing to satisfy mypy.
-    name: str
     try:
         if provider_type == "first_party":
-            name = integrations.get(provider_slug).name
+            return integrations.get(provider_slug).name
         elif provider_type == "plugin":
-            name = plugins.get(provider_slug).title
+            return plugins.get(provider_slug).title
         elif provider_type == "sentry_app":
-            name = SentryApp.objects.get(slug=provider_slug).name
-        else:
-            raise ValueError(f"Invalid providerType {provider_type}")
+            return SentryApp.objects.get(slug=provider_slug).name
     except (KeyError, SentryApp.DoesNotExist):
-        return None
-    return name
+        pass
+    return None
 
 
 class OrganizationIntegrationRequestEndpoint(OrganizationRequestChangeEndpoint):
