@@ -1,5 +1,5 @@
 import re
-from typing import Mapping, Union
+from typing import Any, Mapping, Sequence, Union
 from urllib.parse import urljoin
 
 from django.http import HttpResponse
@@ -178,3 +178,16 @@ def send_slack_response(
                 else "slack.unlink-notify.response-error"
             )
             logger.error(log_message, extra={"error": message})
+
+
+def build_buttons(notification: BaseNotification) -> Sequence[Mapping[str, Any]]:
+    return [
+        {
+            "text": action.label,
+            "name": action.label,
+            "url": action.url,
+            "style": action.style,
+            "type": "button",
+        }
+        for action in notification.get_message_actions()
+    ]

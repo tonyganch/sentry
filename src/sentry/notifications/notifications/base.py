@@ -1,37 +1,18 @@
 import abc
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Dict, Mapping, MutableMapping, Optional, Tuple, Type, Union
-
-from typing_extensions import Literal
+from typing import Any, Mapping, MutableMapping, Optional, Sequence, Tuple, TYPE_CHECKING, Union
 
 from sentry import analytics
+from sentry.notifications.notifications.message_action import MessageAction
 from sentry.types.integrations import ExternalProviders
 from sentry.utils.http import absolute_uri
 
 if TYPE_CHECKING:
-
     from sentry.integrations.slack.message_builder import SlackAttachment
     from sentry.integrations.slack.message_builder.notifications import (
         SlackNotificationsMessageBuilder,
         SlackProjectNotificationsMessageBuilder,
     )
     from sentry.models import Organization, Project, Team, User
-
-
-@dataclass
-class MessageAction:
-    label: str
-    url: str
-    style: Optional[Literal["primary", "danger", "default"]] = None
-
-    def as_slack(self) -> Mapping[str, Any]:
-        return {
-            "text": self.label,
-            "name": self.label,
-            "url": self.url,
-            "style": self.style,
-            "type": "button",
-        }
 
 
 class BaseNotification(abc.ABC):
