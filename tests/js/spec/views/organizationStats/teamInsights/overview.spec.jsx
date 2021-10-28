@@ -1,9 +1,4 @@
-import {
-  fireEvent,
-  mountWithTheme,
-  screen,
-  userEvent,
-} from 'sentry-test/reactTestingLibrary';
+import {mountWithTheme, screen, userEvent} from 'sentry-test/reactTestingLibrary';
 
 import ProjectsStore from 'app/stores/projectsStore';
 import TeamStore from 'app/stores/teamStore';
@@ -153,7 +148,7 @@ describe('TeamInsightsOverview', () => {
     createWrapper();
 
     expect(screen.getByText('#backend')).toBeInTheDocument();
-    fireEvent.mouseDown(screen.getByText('#backend'));
+    userEvent.type(screen.getByText('#backend'), '{mouseDown}');
     expect(screen.getByText('#frontend')).toBeInTheDocument();
     // Teams user is not a member of are hidden
     expect(screen.queryByText('#internal')).not.toBeInTheDocument();
@@ -170,7 +165,7 @@ describe('TeamInsightsOverview', () => {
     createWrapper();
 
     expect(screen.getByText('#backend')).toBeInTheDocument();
-    fireEvent.mouseDown(screen.getByText('#backend'));
+    userEvent.type(screen.getByText('#backend'), '{mouseDown}');
     expect(screen.getByText('#frontend')).toBeInTheDocument();
     // User is not a member of internal team
     expect(screen.getByText('#internal')).toBeInTheDocument();
