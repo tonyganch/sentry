@@ -1,4 +1,9 @@
-import {fireEvent, mountWithTheme, screen} from 'sentry-test/reactTestingLibrary';
+import {
+  fireEvent,
+  mountWithTheme,
+  screen,
+  userEvent,
+} from 'sentry-test/reactTestingLibrary';
 
 import ProjectsStore from 'app/stores/projectsStore';
 import TeamStore from 'app/stores/teamStore';
@@ -152,7 +157,7 @@ describe('TeamInsightsOverview', () => {
     expect(screen.getByText('#frontend')).toBeInTheDocument();
     // Teams user is not a member of are hidden
     expect(screen.queryByText('#internal')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText('#frontend'));
+    userEvent.click(screen.getByText('#frontend'));
     expect(mockRouter.push).toHaveBeenCalledWith({query: {team: team1.id}});
     expect(localStorage.setItem).toHaveBeenCalledWith(
       'teamInsightsSelectedTeamId:org-slug',

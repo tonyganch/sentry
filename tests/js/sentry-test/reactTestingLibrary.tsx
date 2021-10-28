@@ -1,7 +1,12 @@
 import {Component, Fragment} from 'react';
 import {cache} from '@emotion/css';
 import {CacheProvider, ThemeProvider} from '@emotion/react';
-import {render, RenderOptions} from '@testing-library/react';
+import {
+  fireEvent as reactRtlFireEvent,
+  render,
+  RenderOptions,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import {lightTheme} from 'app/utils/theme';
 
@@ -51,4 +56,11 @@ const mountWithTheme = (ui: React.ReactElement, options?: ContextRenderOptions) 
 
 export * from '@testing-library/react';
 
-export {mountWithTheme};
+/**
+ * @deprecated
+ * Use userEvent over fireEvent where possible.
+ * More details: https://kentcdodds.com/blog/common-mistakes-with-react-testing-library#not-using-testing-libraryuser-event
+ */
+const fireEvent = reactRtlFireEvent;
+
+export {mountWithTheme, userEvent, fireEvent};

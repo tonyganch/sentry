@@ -5,6 +5,7 @@ import {
   fireEvent,
   mountWithTheme,
   screen,
+  userEvent,
   waitForElementToBeRemoved,
   within,
 } from 'sentry-test/reactTestingLibrary';
@@ -56,7 +57,7 @@ describe('Filters and Sampling', function () {
 
   async function renderModal(actionElement: HTMLElement, takeScreenshot = false) {
     // Open Modal
-    fireEvent.click(actionElement);
+    userEvent.click(actionElement);
     const dialog = await screen.findByRole('dialog');
     expect(dialog).toBeInTheDocument();
 
@@ -428,7 +429,7 @@ describe('Filters and Sampling', function () {
       expect(autocompleteOptions).toHaveTextContent('[I3].[0-9]');
 
       // Click on the suggested option
-      fireEvent.click(autocompleteOptions);
+      userEvent.click(autocompleteOptions);
 
       expect(modal.getByRole('button', {name: 'Save Rule'})).toBeEnabled();
 
@@ -445,7 +446,7 @@ describe('Filters and Sampling', function () {
       expect(saveRuleButtonEnabled).toBeEnabled();
 
       // Click on save button
-      fireEvent.click(saveRuleButtonEnabled);
+      userEvent.click(saveRuleButtonEnabled);
 
       // Modal will close
       await waitForElementToBeRemoved(() => screen.getByText('Edit Error Sampling Rule'));
@@ -641,7 +642,7 @@ describe('Filters and Sampling', function () {
       expect(autocompleteOptions).toHaveTextContent('[0-9]');
 
       // Click on the suggested option
-      fireEvent.click(autocompleteOptions);
+      userEvent.click(autocompleteOptions);
 
       expect(modal.getByRole('button', {name: 'Save Rule'})).toBeEnabled();
 
@@ -658,7 +659,7 @@ describe('Filters and Sampling', function () {
       expect(saveRuleButtonEnabled).toBeEnabled();
 
       // Click on save button
-      fireEvent.click(saveRuleButtonEnabled);
+      userEvent.click(saveRuleButtonEnabled);
 
       // Modal will close
       await waitForElementToBeRemoved(() =>
@@ -856,7 +857,7 @@ describe('Filters and Sampling', function () {
       expect(autocompleteOptions).toHaveTextContent('[0-9]');
 
       // Click on the suggested option
-      fireEvent.click(autocompleteOptions);
+      userEvent.click(autocompleteOptions);
 
       expect(modal.getByRole('button', {name: 'Save Rule'})).toBeEnabled();
 
@@ -873,7 +874,7 @@ describe('Filters and Sampling', function () {
       expect(saveRuleButtonEnabled).toBeEnabled();
 
       // Click on save button
-      fireEvent.click(saveRuleButtonEnabled);
+      userEvent.click(saveRuleButtonEnabled);
 
       // Modal will close
       await waitForElementToBeRemoved(() =>
@@ -1002,7 +1003,7 @@ describe('Filters and Sampling', function () {
       expect(modalActionButtons[1]).toHaveTextContent('Confirm');
 
       // Confirm deletion
-      fireEvent.click(modalActionButtons[1]);
+      userEvent.click(modalActionButtons[1]);
 
       // Confirmation modal will close
       await waitForElementToBeRemoved(() =>
@@ -1038,7 +1039,7 @@ describe('Filters and Sampling', function () {
       expect(saveRuleButton).toBeDisabled();
 
       // Close Modal
-      fireEvent.click(screen.getByLabelText('Close Modal'));
+      userEvent.click(screen.getByLabelText('Close Modal'));
       await waitForElementToBeRemoved(() => screen.getByText('Add Error Sampling Rule'));
     });
 
@@ -1049,7 +1050,7 @@ describe('Filters and Sampling', function () {
       const modal = await renderModal(screen.getByText('Add error rule'));
 
       // Click on 'Add condition'
-      fireEvent.click(modal.getByText('Add Condition'));
+      userEvent.click(modal.getByText('Add Condition'));
 
       // Autocomplete
       const autoCompleteList = await screen.findByTestId('autocomplete-list');
@@ -1066,7 +1067,7 @@ describe('Filters and Sampling', function () {
       }
 
       // Close Modal
-      fireEvent.click(screen.getByLabelText('Close Modal'));
+      userEvent.click(screen.getByLabelText('Close Modal'));
       await waitForElementToBeRemoved(() => screen.getByText('Add Error Sampling Rule'));
     });
 
@@ -1115,7 +1116,7 @@ describe('Filters and Sampling', function () {
       const modal = await renderModal(getByText('Add error rule'));
 
       // Click on 'Add condition'
-      fireEvent.click(modal.getByText('Add Condition'));
+      userEvent.click(modal.getByText('Add Condition'));
 
       // Autocomplete
       const autoCompleteList = await modal.findByTestId('autocomplete-list');
@@ -1125,7 +1126,7 @@ describe('Filters and Sampling', function () {
       const conditionOptions = modal.getAllByRole('presentation');
 
       // Click on the first condition option
-      fireEvent.click(conditionOptions[0]);
+      userEvent.click(conditionOptions[0]);
 
       // Release Field
       await modal.findByTestId('autocomplete-release');
@@ -1147,7 +1148,7 @@ describe('Filters and Sampling', function () {
       expect(autocompleteOptions).toHaveTextContent('1.2.3');
 
       // Click on the suggested option
-      fireEvent.click(autocompleteOptions);
+      userEvent.click(autocompleteOptions);
 
       // Button is still disabled
       const saveRuleButton = modal.getByRole('button', {name: 'Save Rule'});
@@ -1164,7 +1165,7 @@ describe('Filters and Sampling', function () {
       expect(saveRuleButtonEnabled).toBeEnabled();
 
       // Click on save button
-      fireEvent.click(saveRuleButtonEnabled);
+      userEvent.click(saveRuleButtonEnabled);
 
       // Modal will close
       await waitForElementToBeRemoved(() => getByText('Add Error Sampling Rule'));
@@ -1221,7 +1222,7 @@ describe('Filters and Sampling', function () {
       expect(saveRuleButton).toBeDisabled();
 
       // Close Modal
-      fireEvent.click(screen.getByLabelText('Close Modal'));
+      userEvent.click(screen.getByLabelText('Close Modal'));
       await waitForElementToBeRemoved(() =>
         screen.getByText('Add Transaction Sampling Rule')
       );
@@ -1235,7 +1236,7 @@ describe('Filters and Sampling', function () {
       const modal = await renderModal(getByText('Add transaction rule'));
 
       // Click on 'Add condition'
-      fireEvent.click(modal.getByText('Add Condition'));
+      userEvent.click(modal.getByText('Add Condition'));
 
       // Autocomplete
       const autoCompleteList = await modal.findByTestId('autocomplete-list');
@@ -1252,10 +1253,10 @@ describe('Filters and Sampling', function () {
       }
 
       // Unchecked tracing checkbox
-      fireEvent.click(modal.getByRole('checkbox'));
+      userEvent.click(modal.getByRole('checkbox'));
 
       // Click on 'Add condition'
-      fireEvent.click(modal.getByText('Add Condition'));
+      userEvent.click(modal.getByText('Add Condition'));
 
       // No Tracing Condition Options
       const conditionOptions = modal.getAllByRole('presentation');
@@ -1268,7 +1269,7 @@ describe('Filters and Sampling', function () {
       }
 
       // Close Modal
-      fireEvent.click(getByLabelText('Close Modal'));
+      userEvent.click(getByLabelText('Close Modal'));
       await waitForElementToBeRemoved(() => getByText('Add Transaction Sampling Rule'));
     });
 
@@ -1320,7 +1321,7 @@ describe('Filters and Sampling', function () {
         expect(modal.getByRole('checkbox')).toBeChecked();
 
         // Click on 'Add condition'
-        fireEvent.click(modal.getByText('Add Condition'));
+        userEvent.click(modal.getByText('Add Condition'));
 
         // Autocomplete
         const autoCompleteList = await modal.findByTestId('autocomplete-list');
@@ -1330,7 +1331,7 @@ describe('Filters and Sampling', function () {
         const conditionOptions = modal.getAllByRole('presentation');
 
         // Click on the first condition option
-        fireEvent.click(conditionOptions[0]);
+        userEvent.click(conditionOptions[0]);
 
         // Release Field
         await modal.findByTestId('autocomplete-release');
@@ -1354,7 +1355,7 @@ describe('Filters and Sampling', function () {
         expect(autocompleteOptions).toHaveTextContent('1.2.3');
 
         // Click on the suggested option
-        fireEvent.click(autocompleteOptions);
+        userEvent.click(autocompleteOptions);
 
         // Button is still disabled
         const saveRuleButton = modal.getByRole('button', {name: 'Save Rule'});
@@ -1371,7 +1372,7 @@ describe('Filters and Sampling', function () {
         expect(saveRuleButtonEnabled).toBeEnabled();
 
         // Click on save button
-        fireEvent.click(saveRuleButtonEnabled);
+        userEvent.click(saveRuleButtonEnabled);
 
         // Modal will close
         await waitForElementToBeRemoved(() =>
@@ -1434,10 +1435,10 @@ describe('Filters and Sampling', function () {
           const modal = await renderModal(screen.getByText('Add transaction rule'));
 
           // Unchecked tracing checkbox
-          fireEvent.click(modal.getByRole('checkbox'));
+          userEvent.click(modal.getByRole('checkbox'));
 
           // Click on 'Add condition'
-          fireEvent.click(modal.getByText('Add Condition'));
+          userEvent.click(modal.getByText('Add Condition'));
 
           // Autocomplete
           const autoCompleteList = await screen.findByTestId('autocomplete-list');
@@ -1447,7 +1448,7 @@ describe('Filters and Sampling', function () {
           const conditionOptions = modal.getAllByRole('presentation');
 
           // Click on the first condition option
-          fireEvent.click(conditionOptions[0]);
+          userEvent.click(conditionOptions[0]);
 
           // Release Field
           await modal.findByTestId('autocomplete-release');
@@ -1474,7 +1475,7 @@ describe('Filters and Sampling', function () {
           expect(autocompleteOptions).toHaveTextContent('1.2.3');
 
           // Click on the suggested option
-          fireEvent.click(autocompleteOptions);
+          userEvent.click(autocompleteOptions);
 
           // Button is still disabled
           const saveRuleButton = modal.getByRole('button', {name: 'Save Rule'});
@@ -1491,7 +1492,7 @@ describe('Filters and Sampling', function () {
           expect(saveRuleButtonEnabled).toBeEnabled();
 
           // Click on save button
-          fireEvent.click(saveRuleButtonEnabled);
+          userEvent.click(saveRuleButtonEnabled);
 
           // Modal will close
           await waitForElementToBeRemoved(() =>
@@ -1559,13 +1560,13 @@ describe('Filters and Sampling', function () {
           expect(checkedCheckbox).toBeChecked();
 
           // Uncheck tracing checkbox
-          fireEvent.click(checkedCheckbox);
+          userEvent.click(checkedCheckbox);
 
           // Unched tracing checkbox
           expect(checkedCheckbox).not.toBeChecked();
 
           // Click on 'Add condition'
-          fireEvent.click(modal.getByText('Add Condition'));
+          userEvent.click(modal.getByText('Add Condition'));
 
           // Autocomplete
           const autoCompleteList = await screen.findByTestId('autocomplete-list');
@@ -1575,7 +1576,7 @@ describe('Filters and Sampling', function () {
           const conditionOptions = modal.getAllByRole('presentation');
 
           // Click on the seventh condition option
-          fireEvent.click(conditionOptions[6]);
+          userEvent.click(conditionOptions[6]);
 
           // Legacy Browsers
           expect(modal.getByText('All browsers')).toBeInTheDocument();
@@ -1601,7 +1602,7 @@ describe('Filters and Sampling', function () {
           }
 
           // Click on the switch of 'All browsers' option
-          fireEvent.click(switchButtons[0]);
+          userEvent.click(switchButtons[0]);
 
           // All browsers are now checked
           for (const switchButton of switchButtons) {
@@ -1623,7 +1624,7 @@ describe('Filters and Sampling', function () {
           expect(saveRuleButtonEnabled).toBeEnabled();
 
           // Click on save button
-          fireEvent.click(saveRuleButtonEnabled);
+          userEvent.click(saveRuleButtonEnabled);
 
           // Modal will close
           await waitForElementToBeRemoved(() =>

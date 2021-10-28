@@ -2,6 +2,7 @@ import {
   fireEvent,
   mountWithTheme,
   screen,
+  userEvent,
   waitFor,
 } from 'sentry-test/reactTestingLibrary';
 
@@ -55,7 +56,7 @@ describe('IssueListTagFilter', function () {
 
     // changes dropdown input value
     const input = screen.getByLabelText(tag.key);
-    fireEvent.change(input, {target: {value: 'foo'}});
+    userEvent.type(input, 'foo');
 
     // waits for the loading indicator to disappear
     const loadingIndicator = screen.getByText('Loading\u2026');
@@ -68,7 +69,7 @@ describe('IssueListTagFilter', function () {
 
     // selects menu option
     const menuOptionFoo = allFoo[1];
-    fireEvent.click(menuOptionFoo);
+    userEvent.click(menuOptionFoo);
 
     expect(selectMock).toHaveBeenCalledWith(tag, 'foo');
   });
