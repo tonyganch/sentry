@@ -1,11 +1,6 @@
 import range from 'lodash/range';
 
-import {
-  mountWithTheme,
-  screen,
-  userEvent,
-  waitFor,
-} from 'sentry-test/reactTestingLibrary';
+import {mountWithTheme, screen, userEvent} from 'sentry-test/reactTestingLibrary';
 
 import TeamMisery from 'app/views/organizationStats/teamInsights/teamMisery';
 
@@ -97,9 +92,7 @@ describe('TeamMisery', () => {
       {context: routerContext}
     );
 
-    await waitFor(() => {
-      expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
-    });
+    await waitForElementToBeRemoved(() => screen.getByTestId('loading-indicator'));
 
     expect(weekMisery).toHaveBeenCalledTimes(1);
     expect(periodMisery).toHaveBeenCalledTimes(1);
@@ -127,10 +120,6 @@ describe('TeamMisery', () => {
       />,
       {context: routerContext}
     );
-
-    await waitFor(() => {
-      expect(screen.queryByTestId('loading-indicator')).not.toBeInTheDocument();
-    });
 
     expect(screen.getByText('There are no items to display')).toBeInTheDocument();
   });

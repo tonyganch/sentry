@@ -139,7 +139,7 @@ describe('Sidebar', function () {
 
       rerender(getElement({location: {...router.location, pathname: 'new-path-name'}}));
 
-      await waitForElementToBeRemoved(() => screen.queryByText("What's new in Sentry"));
+      await waitForElementToBeRemoved(() => screen.getByText("What's new in Sentry"));
     });
 
     it('can have onboarding feature', async function () {
