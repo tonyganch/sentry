@@ -1,6 +1,11 @@
 import range from 'lodash/range';
 
-import {mountWithTheme, screen, userEvent} from 'sentry-test/reactTestingLibrary';
+import {
+  mountWithTheme,
+  screen,
+  userEvent,
+  waitForElementToBeRemoved,
+} from 'sentry-test/reactTestingLibrary';
 
 import TeamMisery from 'app/views/organizationStats/teamInsights/teamMisery';
 
