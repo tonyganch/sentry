@@ -6,6 +6,8 @@ import space from 'app/styles/space';
 
 import {createContext, ReactChild, useState} from 'react';
 
+import {IconMoon} from 'app/icons';
+
 type ThemeName = 'dark' | 'light';
 
 type Props = {
@@ -20,6 +22,14 @@ const Sample = ({children, showThemeSwitcher = false, noBorder = false}: Props) 
   const [theme, setTheme] = useState<ThemeName>('light');
   let themeObject: Theme;
 
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      setTheme('dark');
+    } else {
+      setTheme('light');
+    }
+  };
+
   if (showThemeSwitcher) {
     themeObject = theme === 'light' ? lightTheme : darkTheme;
   } else {
@@ -30,16 +40,8 @@ const Sample = ({children, showThemeSwitcher = false, noBorder = false}: Props) 
     <Wrap>
       {showThemeSwitcher && (
         <ThemeSwitcher>
-          <ThemeSwitcherButton
-            active={theme === 'light'}
-            onClick={() => setTheme('light')}
-          >
-            Light
-            <ThemeSwitcherLine active={theme === 'light'} noBorder={noBorder} />
-          </ThemeSwitcherButton>
-          <ThemeSwitcherButton active={theme === 'dark'} onClick={() => setTheme('dark')}>
-            Dark
-            <ThemeSwitcherLine active={theme === 'dark'} noBorder={noBorder} />
+          <ThemeSwitcherButton onClick={() => toggleTheme()} active={theme === 'dark'}>
+            <IconMoon />
           </ThemeSwitcherButton>
         </ThemeSwitcher>
       )}
@@ -52,6 +54,8 @@ const Sample = ({children, showThemeSwitcher = false, noBorder = false}: Props) 
   );
 };
 
+export default Sample;
+
 const Wrap = styled.div`
   position: relative;
 `;
@@ -61,10 +65,13 @@ const InnerWrap = styled('div')<{noBorder: boolean; increaseMarginTop: boolean}>
   border-radius: ${p => p.theme.borderRadius};
   margin: ${space(2)} 0;
 
-  ${p => !p.noBorder && `border: solid 1px ${p.theme.border};`}
-  ${p => !p.noBorder && `background: ${p.theme.background};`}
   ${p =>
-    !p.noBorder ? `padding: ${space(2)} ${space(2)};` : `padding-top: ${space(1)};`}
+    !p.noBorder &&
+    `
+    border: solid 1px ${p.theme.border};
+    background: ${p.theme.background};
+    padding: ${space(2)} ${space(2)};
+    `}
   ${p =>
     p.increaseMarginTop && `margin-top: calc(${space(4)} + ${space(4)} + ${space(2)});`}
 
@@ -89,8 +96,8 @@ const InnerWrap = styled('div')<{noBorder: boolean; increaseMarginTop: boolean}>
 const ThemeSwitcher = styled.div`
   position: absolute;
   top: 0;
-  left: 50%;
-  transform: translate(-50%, -100%);
+  right: ${space(0.5)};
+  transform: translateY(-100%);
   border-radius: ${p => p.theme.borderRadius};
   z-index: 1;
 `;
@@ -99,24 +106,23 @@ const ThemeSwitcherButton = styled.button<{active: boolean}>`
   position: relative;
   background-color: transparent;
   border: none;
-  padding: ${space(1)} ${space(2)};
+  border-radius: ${p => p.theme.borderRadius};
+  display: flex;
+  align-items: center;
+  padding: ${space(1)};
+  margin-bottom: ${space(0.5)};
+  color: ${p => p.theme.gray300};
 
-  color: ${p => (p.active ? p.theme.purple300 : p.theme.subText)};
-  font-weight: 600;
-`;
-
-const ThemeSwitcherLine = styled.div<{active: boolean; noBorder: boolean}>`
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 3px;
-
+  &:hover {
+    background: ${p => p.theme.gray100};
+    color: ${p => p.theme.gray500};
+  }
   ${p =>
-    p.noBorder
-      ? `background: ${p.active ? p.theme.purple300 : p.theme.border}`
-      : `background: ${p.active ? p.theme.purple300 : 'transparent'};`}
-  ${p => !p.noBorder && `border-radius: 3px 3px 0 0;`}
+    p.active &&
+    `
+    &,
+    &:hover {
+      color: ${p.theme.gray500};
+    }
+    `}
 `;
-
-export default Sample;

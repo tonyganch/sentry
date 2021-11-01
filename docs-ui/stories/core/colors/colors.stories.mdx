@@ -10,7 +10,7 @@ Sentry has a flexible, tiered color system that adapts to both light and dark mo
 
 ## Grays
 
-There are 5 shades of gray suitable for a wide range of uses in the user interface.
+There are 5 shades of gray suitable for a wide range of uses.
 
 - Gray 300 and above are accessible text colors that conform to [WCAG standards](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html).
 
@@ -44,7 +44,7 @@ Additionally, each hue comes in 3 levels of opacity: 300 (full), 200 (medium), a
 
 ## Accessibility
 
-When it comes to using color, there are two main accessibility concerns: readability and differentiation.
+When it comes to using color, there are two main accessibility concerns: readability and separation.
 
 ### Text readability
 
@@ -79,13 +79,11 @@ Accent colors in the 300 series, except for Yellow 300, satisfy the contrast req
   }}
 />
 
-### Differentiation
+### Separation
 
-Color can be an effective way to visually separate elements in the user interface. However, not all users see color in the same way. Some are color-blind and cannot reliably differentiate colors from one another. Others may use filters, like yellow-shifting for nighttime, or be in bright environments with high amounts of glare, reducing their ability to see color clearly.
+Color can be an effective way to visually separate elements in the user interface. However, not all users see color in the same way. Some are color-blind and cannot reliably differentiate one color from another. Some have color filters on their screens, like Night Shift in MacOS. Others are in bright environments with high levels of glare, reducing their ability to see color clearly.
 
-Given this unreliability, color shouldn't be the only way to differentiate elements. This is especially true in charts where the differentiation between lines and shapes are crucial.
-
-Whenever possible, provide additional visual cues like icons, text labels, line type (solid, dashed, dotted),… to further reinforce the separation.
+As such, color is an unreliable way to separate elements. Whenever possible, provide additional visual cues like icons, text labels, line type (solid, dashed, dotted),… to further reinforce the separation.
 
 <DoDont
   doBox={{

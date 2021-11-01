@@ -236,12 +236,12 @@ const accentColors: ColorDefinition[] = [
 ];
 
 export const NeutralTable = () => (
-  <Sample showThemeSwitcher>
+  <Sample showThemeSwitcher noBorder>
     <ColorTable colors={neutralColors} />
   </Sample>
 );
 export const AccentTable = () => (
-  <Sample showThemeSwitcher>
+  <Sample showThemeSwitcher noBorder>
     <ColorTable colors={accentColors} />
   </Sample>
 );
