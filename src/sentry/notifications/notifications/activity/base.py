@@ -59,7 +59,7 @@ class ActivityNotification(ProjectNotification, ABC):
 
     def get_participants_with_group_subscription_reason(
         self,
-    ) -> Mapping[ExternalProviders, Mapping[User, int]]:
+    ) -> Mapping[ExternalProviders, Mapping[Team | User, int]]:
         raise NotImplementedError
 
     def send(self) -> None:
@@ -88,7 +88,7 @@ class GroupActivityNotification(ActivityNotification, ABC):
 
     def get_participants_with_group_subscription_reason(
         self,
-    ) -> Mapping[ExternalProviders, Mapping[User, int]]:
+    ) -> Mapping[ExternalProviders, Mapping[Team | User, int]]:
         """This is overridden by the activity subclasses."""
         return get_participants_for_group(self.group, self.activity.user)
 

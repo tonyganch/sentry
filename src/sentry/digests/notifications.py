@@ -4,7 +4,7 @@ import functools
 import itertools
 import logging
 from collections import OrderedDict, defaultdict, namedtuple
-from typing import Any, Mapping, MutableMapping, MutableSequence, Sequence
+from typing import Any, Mapping, MutableMapping, Sequence
 
 from sentry.app import tsdb
 from sentry.digests import Digest, Record
@@ -123,9 +123,7 @@ def rewrite_record(
     )
 
 
-def group_records(
-    groups: MutableMapping[str, Mapping[str, MutableSequence[Record]]], record: Record
-) -> Mapping[str, Mapping[str, Sequence[Record]]]:
+def group_records(groups: Digest, record: Record) -> Digest:
     group = record.value.event.group
     rules = record.value.rules
     if not rules:
@@ -137,9 +135,7 @@ def group_records(
     return groups
 
 
-def sort_group_contents(
-    rules: MutableMapping[str, Mapping[Group, Sequence[Record]]]
-) -> Mapping[str, Mapping[Group, Sequence[Record]]]:
+def sort_group_contents(rules: Digest) -> Digest:
     for key, groups in rules.items():
         rules[key] = OrderedDict(
             sorted(
@@ -152,7 +148,7 @@ def sort_group_contents(
     return rules
 
 
-def sort_rule_groups(rules: Mapping[str, Rule]) -> Mapping[str, Rule]:
+def sort_rule_groups(rules: Digest) -> Digest:
     return OrderedDict(
         sorted(
             rules.items(),

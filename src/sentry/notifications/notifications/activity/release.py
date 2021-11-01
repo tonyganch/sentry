@@ -60,7 +60,7 @@ class ReleaseActivityNotification(ActivityNotification):
 
     def get_participants_with_group_subscription_reason(
         self,
-    ) -> Mapping[ExternalProviders, Mapping[User, int]]:
+    ) -> Mapping[ExternalProviders, Mapping[Team | User, int]]:
         return get_participants_for_release(self.projects, self.organization, self.user_ids)
 
     def get_users_by_teams(self) -> Mapping[int, list[int]]:
