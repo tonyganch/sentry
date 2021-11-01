@@ -209,7 +209,9 @@ class GroupManager(BaseManager):
     def by_qualified_short_id(self, organization_id: int, short_id: str):
         return self.by_qualified_short_id_bulk(organization_id, [short_id])[0]
 
-    def by_qualified_short_id_bulk(self, organization_id: int, short_ids: list[str]) -> Sequence[Group]:
+    def by_qualified_short_id_bulk(
+        self, organization_id: int, short_ids: list[str]
+    ) -> Sequence[Group]:
         short_ids = [parse_short_id(short_id) for short_id in short_ids]
         if not short_ids or any(short_id is None for short_id in short_ids):
             raise Group.DoesNotExist()
