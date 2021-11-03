@@ -8,9 +8,14 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import {Organization} from 'app/types';
 import {lightTheme} from 'app/utils/theme';
+import {OrganizationContext} from 'app/views/organizationContext';
 
-type ContextRenderOptions = RenderOptions & {context?: Record<string, any>};
+type ProviderOptions = {
+  context?: Record<string, any>;
+  organization?: Organization;
+};
 
 function createProvider(contextDefs: Record<string, any>) {
   return class ContextProvider extends Component {
@@ -26,13 +31,22 @@ function createProvider(contextDefs: Record<string, any>) {
   };
 }
 
-function makeAllTheProviders(context?: Record<string, any>) {
+function makeAllTheProviders({context, organization}: ProviderOptions) {
   return function ({children}: {children?: React.ReactNode}) {
     const ContextProvider = context ? createProvider(context) : Fragment;
+
     return (
       <ContextProvider>
         <CacheProvider value={cache}>
-          <ThemeProvider theme={lightTheme}>{children}</ThemeProvider>
+          <ThemeProvider theme={lightTheme}>
+            {organization ? (
+              <OrganizationContext.Provider value={organization}>
+                {children}
+              </OrganizationContext.Provider>
+            ) : (
+              children
+            )}
+          </ThemeProvider>
         </CacheProvider>
       </ContextProvider>
     );
@@ -46,10 +60,13 @@ function makeAllTheProviders(context?: Record<string, any>) {
  * After
  * mountWithTheme(<Something />, {context: routerContext});
  */
-const mountWithTheme = (ui: React.ReactElement, options?: ContextRenderOptions) => {
-  const {context, ...otherOptions} = options ?? {};
+const mountWithTheme = (
+  ui: React.ReactElement,
+  options?: ProviderOptions & RenderOptions
+) => {
+  const {context, organization, ...otherOptions} = options ?? {};
 
-  const AllTheProviders = makeAllTheProviders(context);
+  const AllTheProviders = makeAllTheProviders({context, organization});
 
   return render(ui, {wrapper: AllTheProviders, ...otherOptions});
 };
