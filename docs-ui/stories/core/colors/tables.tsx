@@ -1,247 +1,239 @@
+import Sample, {SampleThemeContext} from 'docs-ui/components/sample';
+import ColorSwatch from './colorSwatch';
 import styled from '@emotion/styled';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableRow,
-} from 'docs-ui/components/table';
-import ColorChip from 'docs-ui/components/colorChip';
 import space from 'app/styles/space';
-import Sample, {ThemeContext} from 'docs-ui/components/sample';
 
-import {useContext, useEffect} from 'react';
+import {useContext} from 'react';
 
 type ColorDefinition = {
   name: string;
   lightValue: string;
   darkValue: string;
-  aliases?: string[];
-  useFor: string;
 };
 
-const ColorValue = styled.code`
-  &&& {
-    display: inline-block;
-    font-size: 0.875rem;
-    color: ${p => p.theme.textColor};
-    background: ${p => p.theme.backgroundSecondary};
-    border-color: ${p => p.theme.innerBorder};
-    margin-top: ${space(0.5)};
+type ColorGroup = {
+  id: string;
+  useFor: string;
+  colors: ColorDefinition[];
+};
+
+const Wrap = styled('div')`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16em, 1fr));
+  grid-gap: ${space(2)};
+
+  & > * {
+    grid-column-end: span 1;
   }
 `;
 
-const ColorName = styled.p`
-  color: ${p => p.theme.textColor};
-  font-weight: 600;
-`;
-
-const Alias = styled.code`
-  &&& {
-    display: inline-block;
-    font-size: 0.875rem;
-    margin-top: ${space(1)};
-  }
-`;
-
-const ColorTable = ({colors}: {colors: ColorDefinition[]}) => {
-  const theme = useContext(ThemeContext);
+const ColorTable = ({colorGroups}: {colorGroups: ColorGroup[]}) => {
+  const theme = useContext(SampleThemeContext);
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableHeadCell>Color</TableHeadCell>
-          <TableHeadCell>Name</TableHeadCell>
-          <TableHeadCell>Usage</TableHeadCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {colors.map(c => {
-          const colorValue = theme === 'light' ? c.lightValue : c.darkValue;
-
-          return (
-            <TableRow key={c.name}>
-              <TableCell morePadding verticalAlign="top">
-                <ColorChip value={colorValue} size="lg" noMargin noText />
-              </TableCell>
-              <TableCell morePadding verticalAlign="top">
-                <ColorName>{c.name}</ColorName>
-                <ColorValue>{colorValue}</ColorValue>
-              </TableCell>
-              {/*
-                  <TableCell morePadding verticalAlign="top">
-                    {c.aliases?.map((alias, i) => (
-                      <Fragment key={i}>
-                        <Alias key={i}>{alias}</Alias>
-                        <br />
-                      </Fragment>
-                    ))}
-                  </TableCell>
-                  */}
-              <TableCell morePadding verticalAlign="top">
-                {c.useFor}
-              </TableCell>
-            </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
+    <Wrap>
+      {colorGroups.map(group => {
+        return <ColorSwatch key={group.id} colors={group.colors} theme={theme} />;
+      })}
+    </Wrap>
   );
 };
 
-const neutralColors: ColorDefinition[] = [
+const neutralColors: ColorGroup[] = [
   {
-    name: 'Gray 500',
-    useFor: 'Headings, button labels',
-    lightValue: '#2B2233',
-    darkValue: '#EBE6EF',
+    id: 'gray500',
+    useFor: 'Headings, button labels, tags/badges, and alerts.',
+    colors: [
+      {
+        name: 'Gray 500',
+        lightValue: '#2B2233',
+        darkValue: '#EBE6EF',
+      },
+    ],
   },
   {
-    name: 'Gray 400',
-    useFor: 'Body text',
-    lightValue: '#4D4158',
-    darkValue: '#D6D0DC',
+    id: 'gray400',
+    useFor: 'Body text, input values & labels, ',
+    colors: [
+      {
+        name: 'Gray 400',
+        lightValue: '#4D4158',
+        darkValue: '#D6D0DC',
+      },
+    ],
   },
   {
-    name: 'Gray 300',
-    useFor: 'Placeholders, small labels',
-    lightValue: '#80708F',
-    darkValue: '#998DA5',
+    id: 'gray300',
+    useFor:
+      'Input placeholders, inactive/disabled inputs and buttons, chart labels, supplemental and non-essential text.',
+    colors: [
+      {
+        name: 'Gray 300',
+        lightValue: '#80708F',
+        darkValue: '#998DA5',
+      },
+    ],
   },
   {
-    name: 'Gray 200',
-    useFor: 'Lines, borders',
-    lightValue: '#DBD6E1',
-    darkValue: '#43384C',
+    id: 'gray200',
+    useFor: 'Outer borders.',
+    colors: [
+      {
+        name: 'Gray 200',
+        lightValue: '#DBD6E1',
+        darkValue: '#43384C',
+      },
+    ],
   },
   {
-    name: 'Gray 100',
-    useFor: 'Lines, borders',
-    lightValue: '#EBE6EF',
-    darkValue: '#342B3B',
+    id: 'gray100',
+    useFor: 'Inner borders and dividers.',
+    colors: [
+      {
+        name: 'Gray 100',
+        lightValue: '#EBE6EF',
+        darkValue: '#342B3B',
+      },
+    ],
   },
 ];
 
-const accentColors: ColorDefinition[] = [
+const accentColors: ColorGroup[] = [
   {
-    name: 'Purple 300',
-    useFor: 'Active states – text, background fill',
-    lightValue: 'rgba(108, 95, 199, 1)',
-    darkValue: 'rgba(118, 105, 211, 1)',
+    id: 'purple',
+    useFor: 'Branding, active/focus states.',
+    colors: [
+      {
+        name: 'Purple 300',
+        lightValue: 'rgba(108, 95, 199, 1)',
+        darkValue: 'rgba(118, 105, 211, 1)',
+      },
+      {
+        name: 'Purple 200',
+        lightValue: 'rgba(108, 95, 199, 0.5)',
+        darkValue: 'rgba(118, 105, 211, 0.4)',
+      },
+      {
+        name: 'Purple 100',
+        lightValue: 'rgba(108, 95, 199, 0.1)',
+        darkValue: 'rgba(118, 105, 211, 0.06)',
+      },
+    ],
   },
   {
-    name: 'Purple 200',
-    useFor: 'Active states – borders, outlines',
-    lightValue: 'rgba(108, 95, 199, 0.5)',
-    darkValue: 'rgba(118, 105, 211, 0.4)',
+    id: 'blue',
+    useFor: 'Links, informational alerts.',
+    colors: [
+      {
+        name: 'Blue 300',
+        lightValue: 'rgba(61, 116, 219, 1)',
+        darkValue: 'rgba(92, 149, 255, 1)',
+      },
+      {
+        name: 'Blue 200',
+        lightValue: 'rgba(61, 116, 219, 0.5)',
+        darkValue: 'rgba(92, 149, 255, 0.4)',
+      },
+      {
+        name: 'Blue 100',
+        lightValue: 'rgba(61, 116, 219, 0.1)',
+        darkValue: 'rgba(92, 149, 255, 0.06)',
+      },
+    ],
   },
   {
-    name: 'Purple 100',
-    useFor: 'Active states – background fill',
-    lightValue: 'rgba(108, 95, 199, 0.1)',
-    darkValue: 'rgba(118, 105, 211, 0.06)',
+    id: 'green',
+    useFor: 'Communicating success, resolution, approval, availability, or creation.',
+    colors: [
+      {
+        name: 'Green 300',
+        lightValue: 'rgba(43, 161, 133, 1)',
+        darkValue: 'rgba(42, 200, 163, 1)',
+      },
+      {
+        name: 'Green 200',
+        lightValue: 'rgba(43, 161, 133, 0.5)',
+        darkValue: 'rgba(42, 200, 163, 0.4)',
+      },
+      {
+        name: 'Green 100',
+        lightValue: 'rgba(43, 161, 133, 0.1)',
+        darkValue: 'rgba(42, 200, 163, 0.06)',
+      },
+    ],
   },
   {
-    name: 'Blue 300',
-    useFor: 'Links - text',
-    lightValue: 'rgba(61, 116, 219, 1)',
-    darkValue: 'rgba(92, 149, 255, 1)',
+    id: 'yellow',
+    useFor: 'Communicating warnings, missing, or impeded progress.',
+    colors: [
+      {
+        name: 'Yellow 300',
+        lightValue: 'rgba(245, 176, 0, 1)',
+        darkValue: 'rgba(255, 194, 39, 1)',
+      },
+      {
+        name: 'Yellow 200',
+        lightValue: 'rgba(245, 176, 0, 0.5)',
+        darkValue: 'rgba(255, 194, 39, 0.4)',
+      },
+      {
+        name: 'Yellow 100',
+        lightValue: 'rgba(245, 176, 0, 0.1)',
+        darkValue: 'rgba(255, 194, 39, 0.06)',
+      },
+    ],
   },
   {
-    name: 'Blue 200',
-    useFor: 'Links – underline',
-    lightValue: 'rgba(61, 116, 219, 0.5)',
-    darkValue: 'rgba(92, 149, 255, 0.4)',
+    id: 'red',
+    useFor: 'Communicating fatal errorrs, deletion, removal, or declines.',
+    colors: [
+      {
+        name: 'Red 300',
+        lightValue: 'rgba(245, 84, 89, 1)',
+        darkValue: 'rgba(250, 79, 84, 1)',
+      },
+      {
+        name: 'Red 200',
+        lightValue: 'rgba(245, 84, 89, 0.5)',
+        darkValue: 'rgba(250, 79, 84, 0.4)',
+      },
+      {
+        name: 'Red 100',
+        lightValue: 'rgba(245, 84, 89, 0.1)',
+        darkValue: 'rgba(250, 79, 84, 0.06)',
+      },
+    ],
   },
   {
-    name: 'Blue 100',
-    useFor: 'Links – background fill',
-    lightValue: 'rgba(61, 116, 219, 0.1)',
-    darkValue: 'rgba(92, 149, 255, 0.06)',
-  },
-  {
-    name: 'Green 300',
-    useFor: 'Success',
-    lightValue: 'rgba(43, 161, 133, 1)',
-    darkValue: 'rgba(42, 200, 163, 1)',
-  },
-  {
-    name: 'Green 200',
-    useFor: 'Success',
-    lightValue: 'rgba(43, 161, 133, 0.5)',
-    darkValue: 'rgba(42, 200, 163, 0.4)',
-  },
-  {
-    name: 'Green 100',
-    useFor: 'Success',
-    lightValue: 'rgba(43, 161, 133, 0.1)',
-    darkValue: 'rgba(42, 200, 163, 0.06)',
-  },
-  {
-    name: 'Yellow 300',
-    useFor: 'Warning',
-    lightValue: 'rgba(245, 176, 0, 1)',
-    darkValue: 'rgba(255, 194, 39, 1)',
-  },
-  {
-    name: 'Yellow 200',
-    useFor: 'Warning',
-    lightValue: 'rgba(245, 176, 0, 0.5)',
-    darkValue: 'rgba(255, 194, 39, 0.4)',
-  },
-  {
-    name: 'Yellow 100',
-    useFor: 'Warning',
-    lightValue: 'rgba(245, 176, 0, 0.1)',
-    darkValue: 'rgba(255, 194, 39, 0.06)',
-  },
-  {
-    name: 'Red 300',
-    useFor: 'Error',
-    lightValue: 'rgba(245, 84, 89, 1)',
-    darkValue: 'rgba(250, 79, 84, 1)',
-  },
-  {
-    name: 'Red 200',
-    useFor: 'Error',
-    lightValue: 'rgba(245, 84, 89, 0.5)',
-    darkValue: 'rgba(250, 79, 84, 0.4)',
-  },
-  {
-    name: 'Red 100',
-    useFor: 'Error',
-    lightValue: 'rgba(245, 84, 89, 0.1)',
-    darkValue: 'rgba(250, 79, 84, 0.06)',
-  },
-  {
-    name: 'Pink 300',
-    useFor: '',
-    lightValue: 'rgba(239, 77, 121, 1)',
-    darkValue: 'rgba(250, 76, 124, 1)',
-  },
-  {
-    name: 'Pink 200',
-    useFor: '',
-    lightValue: 'rgba(239, 77, 121, 0.5)',
-    darkValue: 'rgba(250, 76, 124, 0.4)',
-  },
-  {
-    name: 'Pink 100',
-    useFor: '',
-    lightValue: 'rgba(239, 77, 121, 0.1)',
-    darkValue: 'rgba(250, 76, 124, 0.06)',
+    id: 'Pink',
+    useFor: 'Communicating freshness, new features, or promotions.',
+    colors: [
+      {
+        name: 'Pink 300',
+        lightValue: 'rgba(239, 77, 121, 1)',
+        darkValue: 'rgba(250, 76, 124, 1)',
+      },
+      {
+        name: 'Pink 200',
+        lightValue: 'rgba(239, 77, 121, 0.5)',
+        darkValue: 'rgba(250, 76, 124, 0.4)',
+      },
+      {
+        name: 'Pink 100',
+        lightValue: 'rgba(239, 77, 121, 0.1)',
+        darkValue: 'rgba(250, 76, 124, 0.06)',
+      },
+    ],
   },
 ];
 
 export const NeutralTable = () => (
-  <Sample showThemeSwitcher noBorder>
-    <ColorTable colors={neutralColors} />
+  <Sample showThemeSwitcher>
+    <ColorTable colorGroups={neutralColors} />
   </Sample>
 );
 export const AccentTable = () => (
-  <Sample showThemeSwitcher noBorder>
-    <ColorTable colors={accentColors} />
+  <Sample showThemeSwitcher>
+    <ColorTable colorGroups={accentColors} />
   </Sample>
 );
