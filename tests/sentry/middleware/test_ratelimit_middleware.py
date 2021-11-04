@@ -4,7 +4,9 @@ from unittest.mock import patch
 from django.test import RequestFactory
 from exam import fixture
 
-from sentry.middleware.ratelimit import RatelimitMiddleware
+from sentry.api.base import Endpoint
+from sentry.auth.access import from_request
+from sentry.middleware.ratelimit import RatelimitMiddleware, get_rate_limit_key
 from sentry.testutils import TestCase
 
 
@@ -44,3 +46,27 @@ class RatelimitMiddlewareTest(TestCase):
         time.sleep(1)
         self.middleware.process_view(request, self.view, [], {})
         assert not request.will_be_rate_limited
+
+    def test_get_rate_limit_key(self):
+        # Mock view class
+        class OrganizationGroupIndexEndpoint(Endpoint):
+            pass
+
+        self.view = OrganizationGroupIndexEndpoint
+        request = self.factory.get("/")
+        request.session = {}
+        request.user = self.user
+        request.access = from_request(request, self.organization)
+
+        assert (
+            get_rate_limit_key(self.view, request)
+            == "ip:OrganizationGroupIndexEndpoint:GET:127.0.0.1"
+        )
+        assert (
+            get_rate_limit_key(self.view, request, "user")
+            == f"user:OrganizationGroupIndexEndpoint:GET:{self.user.id}"
+        )
+        assert (
+            get_rate_limit_key(self.view, request, "org")
+            == f"org:OrganizationGroupIndexEndpoint:GET:{self.organization.id}"
+        )
