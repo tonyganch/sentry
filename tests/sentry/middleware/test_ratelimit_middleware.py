@@ -47,7 +47,8 @@ class RatelimitMiddlewareTest(TestCase):
         self.middleware.process_view(request, self.view, [], {})
         assert not request.will_be_rate_limited
 
-    def test_get_rate_limit_key(self):
+    @patch("socket.getaddrinfo")
+    def test_get_rate_limit_key(self, mock_getaddrinfo):
         # Mock view class
         class OrganizationGroupIndexEndpoint(Endpoint):
             pass
@@ -59,6 +60,16 @@ class RatelimitMiddlewareTest(TestCase):
         assert (
             get_rate_limit_key(self.view, request)
             == "ip:tests.sentry.middleware.test_ratelimit_middleware.OrganizationGroupIndexEndpoint:GET:127.0.0.1"
+        )
+        # Test when IP address is missing
+        request.META["REMOTE_ADDR"] = None
+        assert get_rate_limit_key(self.view, request) is None
+
+        # Test when IP addess is IPv6
+        request.META["REMOTE_ADDR"] = "684D:1111:222:3333:4444:5555:6:77"
+        assert (
+            get_rate_limit_key(self.view, request)
+            == "ip:tests.sentry.middleware.test_ratelimit_middleware.OrganizationGroupIndexEndpoint:GET:684D:1111:222:3333:4444:5555:6:77"
         )
 
         # Test for users
