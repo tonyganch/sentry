@@ -108,6 +108,24 @@ class VstsIssueBase(TestCase):
                             }
                         ],
                     },
+                    {
+                        "workItemTypes": [
+                            {
+                                "url": f"https://fabrikam-fiber-inc.visualstudio.com/{project}/wit/workItemTypeCategories/Custom.SentryReport",
+                                "name": "Sentry Report",
+                            }
+                        ],
+                    },
+                    {
+                        "name": "Hidden Types Category",
+                        "referenceName": "Microsoft.HiddenCategory",
+                        "workItemTypes": [
+                            {
+                                "url": f"https://fabrikam-fiber-inc.visualstudio.com/{project}/wit/workItemTypeCategories/Custom.SentryReport",
+                                "name": "Sentry Report",
+                            }
+                        ],
+                    }
                 ]
             },
         )

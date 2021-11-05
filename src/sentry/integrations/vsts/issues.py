@@ -79,14 +79,25 @@ class VstsIssueSync(IssueSyncMixin):  # type: ignore
         except (ApiError, ApiUnauthorized, KeyError) as e:
             self.raise_error(e)
 
+        # create map of hidden item types to exclude them from available options
+        hidden_item_category = [item for item in item_categories if item.get("referenceName") == "Microsoft.HiddenCategory"]
+        hidden_item_types = []
+        for hidden_item_type_object in hidden_item_category["workItemTypes"]:
+            # the type is the last part of the url
+            hidden_item_type = hidden_item_type_object["url"].split("/")[-1]
+            hidden_item_types.append(hidden_item_type)
+
+
         # we want to maintain ordering of the items
         item_type_map = OrderedDict()
         for item in item_categories:
+            if item["referenceName"] == "Microsoft.HiddenCategory":
+                continue
             for item_type_object in item["workItemTypes"]:
                 # the type is the last part of the url
                 item_type = item_type_object["url"].split("/")[-1]
                 # we can have duplicates so need to dedupe
-                if item_type not in item_type_map:
+                if item_type not in item_type_map and item_type not in hidden_item_types:
                     item_type_map[item_type] = item_type_object["name"]
 
         item_tuples = list(item_type_map.items())
